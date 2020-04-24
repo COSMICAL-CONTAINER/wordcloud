@@ -1,33 +1,28 @@
-#绘制词云
-from wordcloud import WordCloud
-from PIL import Image 
-import numpy as np
-import re
-import matplotlib.pyplot as plt
+import os
+from os import path
 import jieba
-file=open('text.txt','r',encoding='utf-8')
-text=file.read()
-file.close()
-#print(text)
-word_list = jieba.cut(text)
-# 分词后在单独个体之间加上空格
-result = " ".join(word_list)
-text=result
-words=text.split()  #将字符串打断成单词
-#words1=[word.lower() for word in words]  #大写转小写
-words2=[re.sub("[，。！；？、\“\”]",'',word) for word in words]#去掉标点符号
-words_index=set(words)  #去重复
-dic={index:words2.count(index) for index in words_index} #统计词频
-graph=np.array(Image.open('picture.jpg'))#轮廓图片读成像素矩阵
-wc=WordCloud(font_path = 'C:\Windows\Fonts\simkai.TTF',
-                            background_color = 'white', # 背景色
-                            max_words = 1200, # 最大显示单词数
-                            max_font_size = 66, # 频率最大单词字体大小
-                            scale=5,  #图片清晰度，不要调太高，否则云图加载不出来
-                            mask=graph)  #设置词云背景颜色及形状
-wc.generate_from_frequencies(dic)#读进词频数据
-wc.to_file("save.jpg")#保存图片
-#展示图片
-#plt.imshow(wc)
-#plt.axis("off")#去除坐标轴
-#plt.show()
+from wordcloud import WordCloud
+import matplotlib.pyplot as plt
+
+# 获取单前文件路径
+d = path.dirname(__file__) if "__file__" in locals() else os.getcwd()
+# 获取文本text
+with open(path.join(d,'text.txt')) as f:
+    # cut_txt =" ".join(f.read())#空格划分
+    cut_txt =f.read()
+    print(cut_txt)
+    photo =plt.imread('picture.jpg')#形成词云图的图片形状
+    wordcloud =WordCloud(
+            font_path="simhei.ttf",#设置输出词云的字体
+            max_font_size=60,#设置字体的大小，默认200
+            background_color='white',
+            prefer_horizontal=1,
+            #width=2300,height=1900,
+            scale=6,#设置图的词密度
+            random_state=50,## random.Random用来生成随机颜色
+            mask=photo#设置图片形状,
+            ).generate(cut_txt)#generate()根据文本生成词云
+    plt.imshow(wordcloud,interpolation="nearest")
+    plt.axis("off")#关闭x,y轴刻度
+    plt.savefig('save.jpg')
+    plt.show()
