@@ -8,3 +8,5 @@
 1.一个txt文件记录数据
 2.一张图片
 3.这个源码
+
+![image](https://github.com/a1727585014/wordcloud/blob/master/save.png)
